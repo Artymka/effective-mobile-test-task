@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 func (r *SubscriptionRepository) Update(id uuid.UUID, data models.UpdateSubscription) (models.Subscription, error) {
@@ -44,10 +45,15 @@ func (r *SubscriptionRepository) Update(id uuid.UUID, data models.UpdateSubscrip
 	var updatedSub models.Subscription
 	err := r.db.Get(&updatedSub, query, data.ServiceName, data.Price, data.StartDate, data.EndDate, id)
 	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			if pqErr.Code == "23505" {
+				return updatedSub, NotUniqueErr
+			}
+		}
 		return updatedSub, err
 	}
 
-	return updatedSub, err
+	return updatedSub, nil
 	// rows, err := result.RowsAffected()
 	// if err != nil {
 	// 	return err

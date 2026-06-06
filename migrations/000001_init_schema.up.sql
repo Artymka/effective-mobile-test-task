@@ -9,10 +9,11 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     end_date DATE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     
-    CONSTRAINT end_date_after_start_date CHECK (end_date IS NULL OR end_date >= start_date)
+    CONSTRAINT end_date_after_start_date CHECK (end_date IS NULL OR end_date >= start_date),
+    CONSTRAINT user_id_and_service_name_unique UNIQUE (service_name, user_id) 
 );
 
 CREATE INDEX idx_subscriptions_user_id ON subscriptions(user_id);
 CREATE INDEX idx_subscriptions_service_name ON subscriptions(service_name);
-CREATE INDEX idx_subscriptions_start_date ON subscriptions(start_date);
-CREATE INDEX idx_subscriptions_composite ON subscriptions(user_id, service_name, start_date);
+-- CREATE INDEX idx_subscriptions_start_date ON subscriptions(start_date);
+-- CREATE INDEX idx_subscriptions_composite ON subscriptions(user_id, service_name, start_date);

@@ -163,6 +163,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/lib.ErrResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/lib.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -192,6 +196,10 @@ paths:
               type: object
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/lib.ErrResponse'
+        "409":
+          description: Conflict
           schema:
             $ref: '#/definitions/lib.ErrResponse'
         "500":

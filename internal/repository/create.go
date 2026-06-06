@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
+	"github.com/lib/pq"
 )
 
 func (r *SubscriptionRepository) Create(sub *models.Subscription) error {
@@ -21,7 +22,7 @@ func (r *SubscriptionRepository) Create(sub *models.Subscription) error {
 	// 	endDate = nil
 	// }
 
-	return r.db.QueryRowx(
+	err := r.db.QueryRowx(
 		query,
 		sub.ServiceName,
 		sub.Price,
@@ -31,4 +32,14 @@ func (r *SubscriptionRepository) Create(sub *models.Subscription) error {
 		// sub.CreatedAt,
 	// ).Scan(&sub.ID, &sub.CreatedAt)
 	).Scan(&sub.ID, &sub.CreatedAt)
+
+	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			if pqErr.Code == "23505" {
+				return NotUniqueErr
+			}
+		}
+		return err
+	}
+	return nil
 }

@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	NotFoundErr = errors.New("Record not found")
+	NotFoundErr  = errors.New("Record not found")
+	NotUniqueErr = errors.New("Unique constraint violated")
 )
 
 type SubscriptionRepository struct {

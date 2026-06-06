@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/Artymka/effective-mobile-test-task/internal/lib"
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
+	"github.com/Artymka/effective-mobile-test-task/internal/repository"
 	"github.com/google/uuid"
 )
 
@@ -15,7 +17,7 @@ import (
 // @Produce      json
 // @Param        request body models.CreateSubscriptionRequest true "Subscription info"
 // @Success      201  {object} lib.Response{data=models.SubscriptionResponse}
-// @Failure      400,500  {object} lib.ErrResponse
+// @Failure      400,409,500  {object} lib.ErrResponse
 // @Router       /subscriptions [post]
 func (h *SubscriptionHandlers) Create(w http.ResponseWriter, r *http.Request) {
 	const op = "handler.create"
@@ -68,8 +70,12 @@ func (h *SubscriptionHandlers) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.Repo.Create(subscription); err != nil {
-		h.Log.Error(op, err)
-		lib.WriteError(w, "Error while creating subscription", http.StatusInternalServerError)
+		if errors.Is(err, repository.NotUniqueErr) {
+			lib.WriteError(w, "Pair of service and user must be unique", http.StatusConflict)
+		} else {
+			h.Log.Error(op, err)
+			lib.WriteError(w, "Error while creating subscription", http.StatusInternalServerError)
+		}
 		return
 	}
 

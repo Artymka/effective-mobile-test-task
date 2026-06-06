@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/Artymka/effective-mobile-test-task/internal/lib"
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
+	"github.com/Artymka/effective-mobile-test-task/internal/repository"
 	"github.com/google/uuid"
 )
 
@@ -15,7 +17,7 @@ import (
 // @Param        id query string true "Subscription id"
 // @Param        request body models.CreateSubscriptionRequest true "Subscription info"
 // @Success      200  {object} lib.Response{data=models.SubscriptionResponse}
-// @Failure      400,500  {object} lib.ErrResponse
+// @Failure      400,409,500  {object} lib.ErrResponse
 // @Router       /subscriptions [patch]
 func (h *SubscriptionHandlers) Update(w http.ResponseWriter, r *http.Request) {
 	const op = "handlers.update"
@@ -43,9 +45,15 @@ func (h *SubscriptionHandlers) Update(w http.ResponseWriter, r *http.Request) {
 
 	// response
 	if err != nil {
-		h.Log.Error(op, err)
-		lib.WriteError(w, "Error while updating subscription", http.StatusInternalServerError)
+		if errors.Is(err, repository.NotUniqueErr) {
+			lib.WriteError(w, "Pair of service and user must be unique", http.StatusConflict)
+		} else {
+			h.Log.Error(op, err)
+			lib.WriteError(w, "Error while updating subscription", http.StatusInternalServerError)
+		}
+		return
 	}
+
 	resp := res.ToResponse()
 	lib.WriteResponse(w, &resp)
 
