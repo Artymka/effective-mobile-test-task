@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/Artymka/effective-mobile-test-task/internal/lib"
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
+	"github.com/Artymka/effective-mobile-test-task/internal/repository"
 	"github.com/google/uuid"
 )
 
@@ -13,14 +15,19 @@ func (h *SubscriptionHandlers) TotalCost(w http.ResponseWriter, r *http.Request)
 	const op = "handler.total_cost"
 
 	// validation
-	userID := r.URL.Query().Get("user_id")
-	serviceName := r.URL.Query().Get("start_date")
+	var userID, serviceName *string
+	if t := r.URL.Query().Get("user_id"); t != "" {
+		userID = &t
+	}
+	if t := r.URL.Query().Get("service_name"); t != "" {
+		serviceName = &t
+	}
 
 	reqData := models.TotalCostRequest{
 		StartDate:   r.URL.Query().Get("start_date"),
 		EndDate:     r.URL.Query().Get("end_date"),
-		UserID:      &userID,
-		ServiceName: &serviceName,
+		UserID:      userID,
+		ServiceName: serviceName,
 	}
 
 	if err, msg := lib.ValidateStruct(h.Valid, &reqData, "Wrong params: "); err != nil {
@@ -47,7 +54,12 @@ func (h *SubscriptionHandlers) TotalCost(w http.ResponseWriter, r *http.Request)
 	})
 
 	if err != nil {
-		lib.WriteError(w, "Error while calculating total cost", http.StatusInternalServerError)
+		if errors.Is(err, repository.NotFoundErr) {
+			lib.WriteError(w, "Wrong user_id or service_name", http.StatusConflict)
+		} else {
+			h.Log.Error(op, err)
+			lib.WriteError(w, "Error while calculating total cost", http.StatusInternalServerError)
+		}
 		return
 	}
 

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -11,6 +12,8 @@ import (
 
 func (h *SubscriptionHandlers) List(w http.ResponseWriter, r *http.Request) {
 	const op = "handler.list"
+
+	// h.Log.Info(op, fmt.Sprintf("r url: %s, host: %s, port: %s", r.URL.String(), r.URL.Host, r.URL.Scheme))
 
 	// validation
 	page, err := strconv.Atoi(r.URL.Query().Get("page"))
@@ -28,23 +31,29 @@ func (h *SubscriptionHandlers) List(w http.ResponseWriter, r *http.Request) {
 	totalCount := h.Repo.Count()
 	if totalCount <= limit*(page-1) {
 		lib.WriteError(w, "No such page found", http.StatusNotFound)
+		return
 	}
 
 	// previous and next pages
 	var prevURLs, nextURLs string
+	baseURL := url.URL{
+		Scheme: h.Config.ServerScheme,
+		Host:   fmt.Sprintf("%s:%s", h.Config.ServerHost, h.Config.ServerPort),
+		Path:   r.URL.Path,
+	}
 	if page > 1 {
 		params := url.Values{}
 		params.Add("page", strconv.Itoa(page-1))
 		params.Add("limit", strconv.Itoa(limit))
-		prevURL, _ := url.Parse(r.URL.String())
-		prevURLs = prevURL.String()
+		baseURL.RawQuery = params.Encode()
+		prevURLs = baseURL.String()
 	}
 	if totalCount > limit*page {
 		params := url.Values{}
 		params.Add("page", strconv.Itoa(page+1))
 		params.Add("limit", strconv.Itoa(limit))
-		nextURL, _ := url.Parse(r.URL.String())
-		nextURLs = nextURL.String()
+		baseURL.RawQuery = params.Encode()
+		nextURLs = baseURL.String()
 	}
 
 	subs, err := h.Repo.List(page, limit)

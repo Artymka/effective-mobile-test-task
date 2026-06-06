@@ -12,15 +12,6 @@ import (
 )
 
 func main() {
-	// log := lib.NewLogger()
-
-	// log.Error("some op", fmt.Errorf("some error"))
-
-	// json.NewEncoder(os.Stdout).Encode(&lib.ErrResponse{
-	// 	Response: lib.Response{false, nil},
-	// 	Err:      "some error",
-	// })
-
 	conf := config.Load()
 
 	db, err := database.NewPostgresDB(conf.GetDBConnectionString())
@@ -29,13 +20,13 @@ func main() {
 	}
 	defer db.Close()
 
-	repo := repository.NewSubscriptionRepository(db.DB)
+	repo := repository.NewSubscriptionRepository(db.DB, conf)
 
 	valid := validator.New()
 
 	logger := lib.NewLogger()
 
-	mux := router.New(repo, valid, logger)
+	mux := router.New(repo, valid, logger, conf)
 
 	http.ListenAndServe("localhost:8000", mux)
 }

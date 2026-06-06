@@ -9,14 +9,16 @@ import (
 )
 
 type Config struct {
-	DBHost      string
-	DBPort      int
-	DBUser      string
-	DBPassword  string
-	DBName      string
-	DBSSLMode   string
-	ServerPort  string
-	Environment string
+	DBHost       string
+	DBPort       int
+	DBUser       string
+	DBPassword   string
+	DBName       string
+	DBSSLMode    string
+	ServerPort   string
+	ServerHost   string
+	ServerScheme string
+	Environment  string
 }
 
 func Load() *Config {
@@ -24,14 +26,16 @@ func Load() *Config {
 	_ = godotenv.Load()
 
 	return &Config{
-		DBHost:      getEnv("DB_HOST", "localhost"),
-		DBPort:      getEnvAsInt("DB_PORT", 5432),
-		DBUser:      getEnv("DB_USER", "postgres"),
-		DBPassword:  getEnv("DB_PASSWORD", "password"),
-		DBName:      getEnv("DB_NAME", "subscriptions"),
-		DBSSLMode:   getEnv("DB_SSLMODE", "disable"),
-		ServerPort:  getEnv("SERVER_PORT", "8080"),
-		Environment: getEnv("ENVIRONMENT", "development"),
+		DBHost:       getEnv("DB_HOST", "localhost"),
+		DBPort:       getEnvAsInt("DB_PORT", 5432),
+		DBUser:       getEnv("DB_USER", "postgres"),
+		DBPassword:   getEnv("DB_PASSWORD", "password"),
+		DBName:       getEnv("DB_NAME", "subscriptions"),
+		DBSSLMode:    getEnv("DB_SSLMODE", "disable"),
+		ServerPort:   getEnv("SERVER_PORT", "8000"),
+		ServerHost:   getEnv("SERVER_HOST", "localhost"),
+		ServerScheme: getEnv("SERVER_SCHEME", "http"),
+		Environment:  getEnv("ENVIRONMENT", "development"),
 	}
 }
 

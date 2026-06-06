@@ -18,9 +18,9 @@ func (l *Logger) Error(op string, err error) {
 }
 
 func (l *Logger) Info(op string, msg string) {
-	l.logger.Error(msg, slog.Attr{"op", slog.AnyValue(op)})
+	l.logger.Info(msg, slog.Attr{"op", slog.AnyValue(op)})
 }
 
 func (l *Logger) Debug(op string, err error, msg string) {
-	l.logger.Error(msg, slog.Attr{"op", slog.AnyValue(op)}, slog.Attr{"err", slog.AnyValue(err)})
+	l.logger.Debug(msg, slog.Attr{"op", slog.AnyValue(op)}, slog.Attr{"err", slog.AnyValue(err)})
 }

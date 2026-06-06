@@ -1,22 +1,10 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
 )
-
-/*
-нужно расчитать произведение месячной стоимости на длительность подписки
-Причем длительность подписки должна вычисляться как Min(record.EndDate, param.EndDate) - startDate
-
-У меня есть таблица с подписками, записи которой содержат id, id пользователя, название сервиса, месячную стоимость подписки, дату начала подписки и дату окончания подписки/NULL.
-У меня есть обязательные параметры для фильтрации: дата начала и дата окончания.
-Также у меня есть два необязвательных параметра: id пользователя и названия сервиса.
-Мне нужно посчитать суммарную стоимость подписок с настренными фильтрами.
-Как это сделать?
-
-Создать новую таблицу, в которой будут количества месяцев для каждой записи (или для фильтрованных записей)
-После
-*/
 
 func (r *SubscriptionRepository) TotalCost(data models.TotalCostFilter) (int, error) {
 	query := `
@@ -28,33 +16,33 @@ func (r *SubscriptionRepository) TotalCost(data models.TotalCostFilter) (int, er
 			EXTRACT(MONTH FROM GREATEST(start_date, $1))) * price)
 		AS total_cost
 		FROM subscriptions
-		WHERE
-		($3 IS NULL OR user_id = $3) AND
-		($4 IS NULL OR service_name = $4);
+		WHERE 1=1
     `
-	// args := []interface{}{startDate, endDate}
-	// argIndex := 3
 
-	// if userID != "" {
-	// 	userUUID, err := uuid.Parse(userID)
-	// 	if err != nil {
-	// 		return 0, fmt.Errorf("invalid user_id format: %w", err)
-	// 	}
-	// 	query += fmt.Sprintf(" AND user_id = $%d", argIndex)
-	// 	args = append(args, userUUID)
-	// 	argIndex++
-	// }
+	args := []interface{}{data.StartDate, data.EndDate}
+	paramCount := 2
 
-	// if serviceName != "" {
-	// 	query += fmt.Sprintf(" AND service_name = $%d", argIndex)
-	// 	args = append(args, serviceName)
-	// }
+	if data.UserID != nil {
+		paramCount++
+		query += fmt.Sprintf(" AND user_id = $%d", paramCount)
+		args = append(args, *data.UserID)
+	}
 
-	var totalCost int
-	err := r.db.Get(&totalCost, query, data.StartDate, data.EndDate, data.UserID, data.ServiceName)
+	if data.ServiceName != nil {
+		paramCount++
+		query += fmt.Sprintf(" AND service_name = $%d", paramCount)
+		args = append(args, *data.ServiceName)
+	}
+
+	var totalCost *int
+	err := r.db.Get(&totalCost, query, args...)
 	if err != nil {
 		return 0, err
 	}
 
-	return totalCost, nil
+	if totalCost == nil {
+		return 0, NotFoundErr
+	}
+
+	return *totalCost, nil
 }

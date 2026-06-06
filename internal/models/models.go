@@ -17,7 +17,7 @@ type Subscription struct {
 }
 
 type CreateSubscriptionRequest struct {
-	ServiceName string  `json:"service_name" validate:"required"`
+	ServiceName string  `json:"service_name" validate:"required,gte=1"`
 	Price       *int    `json:"price" validate:"required,gte=0"`
 	UserID      string  `json:"user_id" validate:"required,uuid"`
 	StartDate   string  `json:"start_date" validate:"required,datetime=01-2006"`
@@ -34,10 +34,10 @@ type DeleteSubscriptionRequest struct {
 
 type UpdateSubscriptionRequest struct {
 	ID          string  `json:"id" validate:"required,uuid"`
-	ServiceName *string `json:"service_name" validate:"omitempty"`
-	Price       *int    `json:"price" validate:"gte=0,omitempty"`
-	StartDate   *string `json:"start_date" validate:"datetime=01-2006,omitempty"`
-	EndDate     *string `json:"end_date" validate:"datetime=01-2006,omitempty"`
+	ServiceName *string `json:"service_name" validate:"omitempty,gte=1"`
+	Price       *int    `json:"price" validate:"omitempty,gte=0"`
+	StartDate   *string `json:"start_date" validate:"omitempty,datetime=01-2006"`
+	EndDate     *string `json:"end_date" validate:"omitempty,datetime=01-2006"`
 }
 
 func (s *UpdateSubscriptionRequest) ToDB() UpdateSubscription {
@@ -78,7 +78,7 @@ type SubscriptionResponse struct {
 	Price       int     `json:"price"`
 	UserID      string  `json:"user_id"`
 	StartDate   string  `json:"start_date"`
-	EndDate     *string `json:"end_date,omitempty"`
+	EndDate     *string `json:"end_date"`
 	CreatedAt   string  `json:"created_at"`
 }
 
@@ -95,7 +95,7 @@ type TotalCostRequest struct {
 	StartDate   string  `json:"start_date" validate:"required,datetime=01-2006"`
 	EndDate     string  `json:"end_date" validate:"required,datetime=01-2006"`
 	UserID      *string `json:"user_id" validate:"omitempty,uuid"`
-	ServiceName *string `json:"service_name" validate:"omitempty"`
+	ServiceName *string `json:"service_name" validate:"omitempty,gte=1"`
 }
 
 type TotalCostFilter struct {
