@@ -11,6 +11,15 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary      Сalculate the total cost of subscriptions for a specified period with the ability to filter by user or service
+// @Produce      json
+// @Param        start_date query string true "Subscription start date"
+// @Param        end_date query string true "Subscription end date"
+// @Param        service_name query string false "Subscription service name"
+// @Param        user_id query string false "Subscription user id"
+// @Success      200  {object} lib.Response{data=integer}
+// @Failure      400,500  {object} lib.ErrResponse
+// @Router       /subscriptions/total-cost [get]
 func (h *SubscriptionHandlers) TotalCost(w http.ResponseWriter, r *http.Request) {
 	const op = "handler.total_cost"
 
@@ -55,7 +64,7 @@ func (h *SubscriptionHandlers) TotalCost(w http.ResponseWriter, r *http.Request)
 
 	if err != nil {
 		if errors.Is(err, repository.NotFoundErr) {
-			lib.WriteError(w, "Wrong user_id or service_name", http.StatusConflict)
+			lib.WriteError(w, "Wrong user_id or service_name", http.StatusBadRequest)
 		} else {
 			h.Log.Error(op, err)
 			lib.WriteError(w, "Error while calculating total cost", http.StatusInternalServerError)

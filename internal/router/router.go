@@ -8,6 +8,9 @@ import (
 	"github.com/Artymka/effective-mobile-test-task/internal/lib"
 	"github.com/Artymka/effective-mobile-test-task/internal/repository"
 	"github.com/go-playground/validator/v10"
+
+	_ "github.com/Artymka/effective-mobile-test-task/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func New(repo *repository.SubscriptionRepository,
@@ -30,6 +33,8 @@ func New(repo *repository.SubscriptionRepository,
 	mux.HandleFunc("DELETE /subscriptions", subHs.Delete)
 	mux.HandleFunc("GET /subscriptions/list", subHs.List)
 	mux.HandleFunc("GET /subscriptions/total-cost", subHs.TotalCost)
+
+	mux.HandleFunc("GET /swagger/", httpSwagger.WrapHandler)
 
 	return mux
 }

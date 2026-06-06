@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Artymka/effective-mobile-test-task/internal/config"
@@ -10,6 +11,9 @@ import (
 	"github.com/Artymka/effective-mobile-test-task/internal/router"
 	"github.com/go-playground/validator/v10"
 )
+
+// @title           Subscription Service API
+// @termsOfService  http://swagger.io/terms/
 
 func main() {
 	conf := config.Load()
@@ -28,5 +32,5 @@ func main() {
 
 	mux := router.New(repo, valid, logger, conf)
 
-	http.ListenAndServe("localhost:8000", mux)
+	http.ListenAndServe(fmt.Sprintf("%s:%s", conf.ServerHost, conf.ServerPort), mux)
 }

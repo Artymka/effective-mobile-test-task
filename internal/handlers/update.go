@@ -9,6 +9,14 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary      Update subscription
+// @Accept       json
+// @Produce      json
+// @Param        id query string true "Subscription id"
+// @Param        request body models.CreateSubscriptionRequest true "Subscription info"
+// @Success      200  {object} lib.Response{data=models.SubscriptionResponse}
+// @Failure      400,500  {object} lib.ErrResponse
+// @Router       /subscriptions [patch]
 func (h *SubscriptionHandlers) Update(w http.ResponseWriter, r *http.Request) {
 	const op = "handlers.update"
 

@@ -8,6 +8,12 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary      Get subscription by id
+// @Produce      json
+// @Param        id query string true "Subscription id"
+// @Success      200  {object} lib.Response{data=models.SubscriptionResponse}
+// @Failure      400,404,500  {object} lib.ErrResponse
+// @Router       /subscriptions [get]
 func (h *SubscriptionHandlers) Get(w http.ResponseWriter, r *http.Request) {
 	const op = "handler.get"
 

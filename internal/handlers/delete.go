@@ -10,6 +10,12 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary      Delete subscription by id
+// @Produce      json
+// @Param        id query string true "Subscription id"
+// @Success      200  {object} lib.Response
+// @Failure      400,404,500  {object} lib.ErrResponse
+// @Router       /subscriptions [delete]
 func (h *SubscriptionHandlers) Delete(w http.ResponseWriter, r *http.Request) {
 	const op = "handler.delete"
 

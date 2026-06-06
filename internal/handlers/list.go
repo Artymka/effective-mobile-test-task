@@ -10,6 +10,13 @@ import (
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
 )
 
+// @Summary      Get a list of subscriptions
+// @Produce      json
+// @Param  		 page query integer false "Page of list"
+// @Param  		 limit query integer false "Limit of list's page"
+// @Success      200  {object} lib.Response{data=models.SubscriptionListResponse}
+// @Failure      404,500  {object} lib.ErrResponse
+// @Router       /subscriptions/list [get]
 func (h *SubscriptionHandlers) List(w http.ResponseWriter, r *http.Request) {
 	const op = "handler.list"
 

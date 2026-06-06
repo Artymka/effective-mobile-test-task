@@ -10,6 +10,13 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary      Create subscription
+// @Accept       json
+// @Produce      json
+// @Param        request body models.CreateSubscriptionRequest true "Subscription info"
+// @Success      201  {object} lib.Response{data=models.SubscriptionResponse}
+// @Failure      400,500  {object} lib.ErrResponse
+// @Router       /subscriptions [post]
 func (h *SubscriptionHandlers) Create(w http.ResponseWriter, r *http.Request) {
 	const op = "handler.create"
 
