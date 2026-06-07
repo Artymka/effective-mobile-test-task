@@ -6,6 +6,7 @@ import (
 	"github.com/Artymka/effective-mobile-test-task/internal/config"
 	"github.com/Artymka/effective-mobile-test-task/internal/handlers"
 	"github.com/Artymka/effective-mobile-test-task/internal/lib"
+	"github.com/Artymka/effective-mobile-test-task/internal/middleware"
 	"github.com/Artymka/effective-mobile-test-task/internal/repository"
 	"github.com/go-playground/validator/v10"
 
@@ -16,7 +17,7 @@ import (
 func New(repo *repository.SubscriptionRepository,
 	valid *validator.Validate,
 	log *lib.Logger,
-	config *config.Config) *http.ServeMux {
+	config *config.Config) *http.Handler {
 
 	subHs := handlers.SubscriptionHandlers{
 		Repo:   repo,
@@ -36,5 +37,7 @@ func New(repo *repository.SubscriptionRepository,
 
 	mux.HandleFunc("GET /swagger/", httpSwagger.WrapHandler)
 
-	return mux
+	loggerMux := middleware.LoggerMiddleware(mux, log)
+
+	return &loggerMux
 }
