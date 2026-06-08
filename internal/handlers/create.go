@@ -71,7 +71,7 @@ func (h *SubscriptionHandlers) Create(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.Repo.Create(subscription); err != nil {
 		if errors.Is(err, repository.NotUniqueErr) {
-			lib.WriteError(w, "Pair of service and user must be unique", http.StatusConflict)
+			lib.WriteError(w, "Group of service, user and start date must be unique", http.StatusConflict)
 		} else {
 			h.Log.Error(op, err)
 			lib.WriteError(w, "Error while creating subscription", http.StatusInternalServerError)

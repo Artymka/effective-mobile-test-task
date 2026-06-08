@@ -47,7 +47,7 @@ func (h *SubscriptionHandlers) Update(w http.ResponseWriter, r *http.Request) {
 	// response
 	if err != nil {
 		if errors.Is(err, repository.NotUniqueErr) {
-			lib.WriteError(w, "Pair of service and user must be unique", http.StatusConflict)
+			lib.WriteError(w, "Group of service, user and start date must be unique", http.StatusConflict)
 		} else if errors.Is(err, sql.ErrNoRows) {
 			lib.WriteError(w, "Subscription not found", http.StatusNotFound)
 		} else {
