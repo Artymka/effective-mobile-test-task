@@ -1,6 +1,6 @@
-package repository
+package database
 
-func (r *SubscriptionRepository) Count() int {
+func (r *SubscriptionRepositoryPostgres) Count() int {
 	var total int
 	query := `SELECT COUNT(1) FROM subscriptions`
 	if err := r.db.Get(&total, query); err != nil {

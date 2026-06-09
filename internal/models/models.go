@@ -59,11 +59,6 @@ func (s *UpdateSubscriptionRequest) ToDB() UpdateSubscription {
 	}
 }
 
-// type ListSubscriptionRequest struct {
-// 	Page   int `validate:"omitempty,gte=1"`
-// 	Offset int `validate:"omitempty,gte=0"`
-// }
-
 type UpdateSubscription struct {
 	ServiceName *string    `db:"service_name"`
 	Price       *int       `db:"price"`
@@ -109,31 +104,6 @@ type AggregateResponse struct {
 	TotalCost int `json:"total_cost"`
 }
 
-// type ErrorResponse struct {
-// 	Error string `json:"error"`
-// }
-
-// func (r *CreateSubscriptionRequest) Validate() error {
-// 	if r.ServiceName == "" {
-// 		return errors.New("service_name is required")
-// 	}
-// 	if r.Price < 0 {
-// 		return errors.New("price must be non-negative")
-// 	}
-// 	if _, err := uuid.Parse(r.UserID); err != nil {
-// 		return errors.New("invalid user_id format")
-// 	}
-// 	if _, err := time.Parse("01-2006", r.StartDate); err != nil {
-// 		return errors.New("invalid start_date format, expected MM-YYYY")
-// 	}
-// 	if r.EndDate != nil {
-// 		if _, err := time.Parse("01-2006", *r.EndDate); err != nil {
-// 			return errors.New("invalid end_date format, expected MM-YYYY")
-// 		}
-// 	}
-// 	return nil
-// }
-
 func (s *Subscription) ToResponse() SubscriptionResponse {
 	var endDate *string
 	if s.EndDate != nil {
@@ -151,21 +121,3 @@ func (s *Subscription) ToResponse() SubscriptionResponse {
 		CreatedAt:   s.CreatedAt.Format(time.RFC3339),
 	}
 }
-
-// Helper functions for JSON marshaling
-// func (s Subscription) MarshalJSON() ([]byte, error) {
-// 	type Alias Subscription
-// 	return json.Marshal(&struct {
-// 		EndDate *string `json:"end_date,omitempty"`
-// 		*Alias
-// 	}{
-// 		EndDate: func() *string {
-// 			if s.EndDate.Valid {
-// 				formatted := s.EndDate.Time.Format("01-2006")
-// 				return &formatted
-// 			}
-// 			return nil
-// 		}(),
-// 		Alias: (*Alias)(&s),
-// 	})
-// }

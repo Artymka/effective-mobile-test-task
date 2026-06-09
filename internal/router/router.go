@@ -14,7 +14,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-func New(repo *repository.SubscriptionRepository,
+func New(repo repository.SubscriptionRepository,
 	valid *validator.Validate,
 	log *lib.Logger,
 	config *config.Config) *http.Handler {

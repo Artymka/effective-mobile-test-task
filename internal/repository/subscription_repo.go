@@ -1,22 +1,16 @@
 package repository
 
 import (
-	"errors"
-
-	"github.com/Artymka/effective-mobile-test-task/internal/config"
-	"github.com/jmoiron/sqlx"
+	"github.com/Artymka/effective-mobile-test-task/internal/models"
+	"github.com/google/uuid"
 )
 
-var (
-	NotFoundErr  = errors.New("Record not found")
-	NotUniqueErr = errors.New("Unique constraint violated")
-)
-
-type SubscriptionRepository struct {
-	db     *sqlx.DB
-	config *config.Config
-}
-
-func NewSubscriptionRepository(db *sqlx.DB, conf *config.Config) *SubscriptionRepository {
-	return &SubscriptionRepository{db: db}
+type SubscriptionRepository interface {
+	Count() int
+	Create(sub *models.Subscription) error
+	Delete(id uuid.UUID) error
+	GetByID(id uuid.UUID) (*models.Subscription, error)
+	List(page, limit int) ([]models.Subscription, error)
+	TotalCost(data models.TotalCostFilter) (int, error)
+	Update(id uuid.UUID, data models.UpdateSubscription) (models.Subscription, error)
 }

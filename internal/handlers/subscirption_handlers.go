@@ -8,7 +8,7 @@ import (
 )
 
 type SubscriptionHandlers struct {
-	Repo   *repository.SubscriptionRepository
+	Repo   repository.SubscriptionRepository
 	Valid  *validator.Validate
 	Log    *lib.Logger
 	Config *config.Config

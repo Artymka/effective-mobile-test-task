@@ -1,4 +1,4 @@
-package repository
+package database
 
 import (
 	"database/sql"
@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *SubscriptionRepository) GetByID(id uuid.UUID) (*models.Subscription, error) {
+func (r *SubscriptionRepositoryPostgres) GetByID(id uuid.UUID) (*models.Subscription, error) {
 	query := `SELECT * FROM subscriptions WHERE id = $1`
 
 	var sub models.Subscription

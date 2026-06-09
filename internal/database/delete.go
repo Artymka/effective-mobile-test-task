@@ -1,4 +1,4 @@
-package repository
+package database
 
 import (
 	"database/sql"
@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *SubscriptionRepository) Delete(id uuid.UUID) error {
+func (r *SubscriptionRepositoryPostgres) Delete(id uuid.UUID) error {
 	query := `DELETE FROM subscriptions WHERE id = $1`
 
 	result, err := r.db.Exec(query, id)

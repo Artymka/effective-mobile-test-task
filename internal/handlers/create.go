@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Artymka/effective-mobile-test-task/internal/database"
 	"github.com/Artymka/effective-mobile-test-task/internal/lib"
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
-	"github.com/Artymka/effective-mobile-test-task/internal/repository"
 	"github.com/google/uuid"
 )
 
@@ -56,7 +56,7 @@ func (h *SubscriptionHandlers) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.Repo.Create(subscription); err != nil {
-		if errors.Is(err, repository.NotUniqueErr) {
+		if errors.Is(err, database.NotUniqueErr) {
 			lib.WriteError(w, "Group of service, user and start date must be unique", http.StatusConflict)
 		} else {
 			h.Log.Error(op, err)

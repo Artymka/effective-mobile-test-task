@@ -1,4 +1,4 @@
-package repository
+package database
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
 )
 
-func (r *SubscriptionRepository) TotalCost(data models.TotalCostFilter) (int, error) {
+func (r *SubscriptionRepositoryPostgres) TotalCost(data models.TotalCostFilter) (int, error) {
 	query := `
         SELECT
 		SUM(

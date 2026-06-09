@@ -1,8 +1,8 @@
-package repository
+package database
 
 import "github.com/Artymka/effective-mobile-test-task/internal/models"
 
-func (r *SubscriptionRepository) List(page, limit int) ([]models.Subscription, error) {
+func (r *SubscriptionRepositoryPostgres) List(page, limit int) ([]models.Subscription, error) {
 	offset := (page - 1) * limit
 
 	// Get paginated results

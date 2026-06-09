@@ -1,11 +1,11 @@
-package repository
+package database
 
 import (
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
 	"github.com/lib/pq"
 )
 
-func (r *SubscriptionRepository) Create(sub *models.Subscription) error {
+func (r *SubscriptionRepositoryPostgres) Create(sub *models.Subscription) error {
 	query := `
         INSERT INTO subscriptions (service_name, price, user_id, start_date, end_date)
         VALUES ($1, $2, $3, $4, $5)

@@ -1,4 +1,4 @@
-package repository
+package database
 
 import (
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
@@ -6,7 +6,7 @@ import (
 	"github.com/lib/pq"
 )
 
-func (r *SubscriptionRepository) Update(id uuid.UUID, data models.UpdateSubscription) (models.Subscription, error) {
+func (r *SubscriptionRepositoryPostgres) Update(id uuid.UUID, data models.UpdateSubscription) (models.Subscription, error) {
 	query := `
 		UPDATE subscriptions SET 
         service_name = COALESCE($1, service_name),

@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Artymka/effective-mobile-test-task/internal/database"
 	"github.com/Artymka/effective-mobile-test-task/internal/lib"
 	"github.com/Artymka/effective-mobile-test-task/internal/models"
-	"github.com/Artymka/effective-mobile-test-task/internal/repository"
 	"github.com/google/uuid"
 )
 
@@ -63,7 +63,7 @@ func (h *SubscriptionHandlers) TotalCost(w http.ResponseWriter, r *http.Request)
 	})
 
 	if err != nil {
-		if errors.Is(err, repository.NotFoundErr) {
+		if errors.Is(err, database.NotFoundErr) {
 			lib.WriteError(w, "Wrong user_id or service_name", http.StatusBadRequest)
 		} else {
 			h.Log.Error(op, err)
