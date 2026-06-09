@@ -36,20 +36,6 @@ func (h *SubscriptionHandlers) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// // if err := reqData.Validate(); err != nil {
-	// if errs := h.Valid.Struct(&reqData); errs != nil {
-	// 	h.Log.Debug(op, errs, "")
-
-	// 	errSb := strings.Builder{}
-	// 	errSb.WriteString("Wrong json: ")
-	// 	for _, err := range errs.(validator.ValidationErrors) {
-	// 		errSb.WriteString(fmt.Sprintf("%s - %s, ", err.Field(), err.Tag()))
-	// 	}
-
-	// 	lib.WriteError(w, errSb.String(), http.StatusBadRequest)
-	// 	return
-	// }
-
 	// db logic
 	startDate, _ := time.Parse("01-2006", reqData.StartDate)
 
@@ -81,6 +67,6 @@ func (h *SubscriptionHandlers) Create(w http.ResponseWriter, r *http.Request) {
 
 	// response
 	responseData := subscription.ToResponse()
-	lib.WriteResponse(w, &responseData)
 	w.WriteHeader(http.StatusCreated)
+	lib.WriteResponse(w, &responseData)
 }

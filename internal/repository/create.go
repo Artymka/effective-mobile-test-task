@@ -12,16 +12,6 @@ func (r *SubscriptionRepository) Create(sub *models.Subscription) error {
         RETURNING id, created_at
     `
 
-	// sub.ID = uuid.New()
-	// sub.CreatedAt = time.Now()
-
-	// var endDate interface{}
-	// if sub.EndDate.Valid {
-	// 	endDate = sub.EndDate.Time
-	// } else {
-	// 	endDate = nil
-	// }
-
 	err := r.db.QueryRowx(
 		query,
 		sub.ServiceName,

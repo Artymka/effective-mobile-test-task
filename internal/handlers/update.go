@@ -59,15 +59,4 @@ func (h *SubscriptionHandlers) Update(w http.ResponseWriter, r *http.Request) {
 
 	resp := res.ToResponse()
 	lib.WriteResponse(w, &resp)
-
-	// if err != nil {
-	// 	if errors.Is(err, sql.ErrNoRows) {
-	// 		lib.WriteError(w, "Subscription not found", http.StatusNotFound)
-	// 	} else {
-	// 		h.Log.Error(op, err)
-	// 		lib.WriteError(w, "Error while updating subscription", http.StatusInternalServerError)
-	// 	}
-	// } else {
-	// 	lib.WriteResponse(w, nil)
-	// }
 }
