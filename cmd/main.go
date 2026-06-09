@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/Artymka/effective-mobile-test-task/internal/config"
 	"github.com/Artymka/effective-mobile-test-task/internal/database"
@@ -16,11 +20,15 @@ import (
 // @termsOfService  http://swagger.io/terms/
 
 func main() {
+	// context for detecting SIGINT/SIGTERM
+	ctx, stop := signal.NotifyContext(
+		context.Background(),
+		syscall.SIGINT,
+		syscall.SIGTERM)
+	defer stop()
+
 	conf := config.Load()
-
 	logger := lib.NewLogger()
-
-	// logger.Info("check db config", conf.GetDBConnectionString())
 	logger.Info("main", "config loaded")
 
 	db, err := database.NewPostgresDB(conf.GetDBConnectionString())
@@ -35,9 +43,32 @@ func main() {
 	valid := validator.New()
 
 	mux := router.New(repo, valid, logger, conf)
-
-	logger.Info("main", "starting server...")
-	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", conf.ServerHost, conf.ServerPort), *mux); err != nil {
-		logger.Error("main", err)
+	server := http.Server{
+		Addr:    fmt.Sprintf("%s:%s", conf.ServerHost, conf.ServerPort),
+		Handler: *mux,
 	}
+	go func() {
+		logger.Info("main", "starting server...")
+		if err := server.ListenAndServe(); err != nil {
+			logger.Error("main", err)
+		}
+	}()
+
+	// graceful shutdown
+	<-ctx.Done()
+	logger.Info("main", "shutting down...")
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer shutdownCancel()
+
+	// server shutdown
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		logger.Error("server shutdown", err)
+	}
+	logger.Info("main", "server shutdown done")
+
+	// postgres shutdown
+	if err := db.Close(); err != nil {
+		logger.Error("postgres shutdown", err)
+	}
+	logger.Info("main", "postgres shutdown done")
 }
