@@ -16,7 +16,12 @@ func (r *SubscriptionRepositoryPostgres) TotalCost(data models.TotalCostFilter) 
 			EXTRACT(MONTH FROM GREATEST(start_date, $1))) * price)
 		AS total_cost
 		FROM subscriptions
-		WHERE 1=1
+		WHERE
+		((end_date IS NULL AND start_date >= $1 AND start_date <= $2) OR
+		(end_date is NOT NULL AND
+			(start_date >= $1 AND start_date <= $2 OR
+			end_date >= $1 AND end_date <= $2)
+		))
     `
 
 	args := []interface{}{data.StartDate, data.EndDate}
